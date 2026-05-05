@@ -11,6 +11,7 @@ from ..db import get_db
 from ..deps import get_current_user, require_roles
 from ..idempotency import get_cached, request_hash, set_cached
 from ..models import Product, User
+from ..services.inventory import get_or_create_snapshot
 from ..schemas import (
     APIResponse,
     ProductCreate,
@@ -74,6 +75,8 @@ def create_product(
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=409, detail="Duplicate SKU or barcode")
+
+    get_or_create_snapshot(db, product.product_id)
 
     write_audit(
         db,

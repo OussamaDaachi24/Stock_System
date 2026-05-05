@@ -77,3 +77,71 @@ class AuditLog(Base):
         Index("idx_audit_entity", "entity_type", "entity_id", "timestamp"),
         Index("idx_audit_action", "action", "timestamp"),
     )
+
+
+LEDGER_TYPES = (
+    "receiving",
+    "sales",
+    "adjustment",
+    "transfer",
+    "return",
+    "reservation",
+    "release",
+    "scrap",
+)
+
+
+class InventoryLedger(Base):
+    __tablename__ = "inventory_ledger"
+
+    ledger_id = Column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    product_id = Column(Integer, ForeignKey("products.product_id"), nullable=False)
+    type = Column(String(50), nullable=False)
+    quantity_delta = Column(Integer, nullable=False)
+    source = Column(String(100), nullable=True)
+    destination = Column(String(100), nullable=True)
+    reference = Column(String(255), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+    reason = Column(String(500), nullable=True)
+    timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_ledger_product", "product_id", "timestamp"),
+        Index("idx_ledger_type", "type", "timestamp"),
+        Index("idx_ledger_reference", "reference"),
+        Index("idx_ledger_user", "user_id", "timestamp"),
+    )
+
+
+class StockSnapshot(Base):
+    __tablename__ = "stock_snapshot"
+
+    snapshot_id = Column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    product_id = Column(Integer, ForeignKey("products.product_id"), nullable=False, unique=True)
+    on_hand = Column(Integer, nullable=False, default=0)
+    reserved = Column(Integer, nullable=False, default=0)
+    available = Column(Integer, nullable=False, default=0)
+    last_ledger_id = Column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        ForeignKey("inventory_ledger.ledger_id"),
+        nullable=True,
+    )
+    snapshot_timestamp = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class LowStockAlert(Base):
+    __tablename__ = "low_stock_alerts"
+
+    alert_id = Column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    product_id = Column(Integer, ForeignKey("products.product_id"), nullable=False)
+    on_hand = Column(Integer, nullable=False)
+    reorder_threshold = Column(Integer, nullable=False)
+    alert_date = Column(String(10), nullable=False)  # YYYY-MM-DD for daily dedup
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("product_id", "alert_date", name="uq_low_stock_per_day"),
+        Index("idx_low_stock_date", "alert_date"),
+    )

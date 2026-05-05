@@ -86,3 +86,73 @@ class ProductListOut(BaseModel):
     total: int
     limit: int
     offset: int
+
+
+# --- Inventory ---
+LedgerType = Literal[
+    "receiving", "sales", "adjustment", "transfer", "return", "reservation", "release", "scrap"
+]
+
+
+class LedgerEntryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    ledger_id: int
+    product_id: int
+    type: str
+    quantity_delta: int
+    source: Optional[str] = None
+    destination: Optional[str] = None
+    reference: Optional[str] = None
+    user_id: int
+    reason: Optional[str] = None
+    timestamp: datetime
+
+
+class LedgerListOut(BaseModel):
+    items: list[LedgerEntryOut]
+    total: int
+    limit: int
+    offset: int
+
+
+class AdjustmentCreate(BaseModel):
+    product_id: int
+    quantity_delta: int = Field(description="Positive or negative; non-zero")
+    reason: str = Field(min_length=1, max_length=500)
+    approver_id: Optional[int] = None
+    allow_negative: bool = False
+
+
+class AdjustmentOut(BaseModel):
+    ledger_id: int
+    product_id: int
+    quantity_delta: int
+    reason: str
+    on_hand: int
+    available: int
+
+
+class SnapshotOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    snapshot_id: int
+    product_id: int
+    on_hand: int
+    reserved: int
+    available: int
+    last_ledger_id: Optional[int] = None
+    snapshot_timestamp: datetime
+    updated_at: datetime
+
+
+class LowStockProductOut(BaseModel):
+    product_id: int
+    sku: str
+    name: str
+    on_hand: int
+    reorder_threshold: int
+
+
+class ReconcileResult(BaseModel):
+    products_checked: int
+    mismatches_found: int
+    corrected: list[dict]

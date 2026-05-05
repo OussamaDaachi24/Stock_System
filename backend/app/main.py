@@ -8,6 +8,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .db import Base, engine
 from .routers.auth import admin_router, router as auth_router
+from .routers.inventory import router as inventory_router
 from .routers.products import router as products_router
 
 
@@ -31,6 +32,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(admin_router)
     app.include_router(products_router)
+    app.include_router(inventory_router)
 
     @app.get("/api/v1/health")
     def health():
