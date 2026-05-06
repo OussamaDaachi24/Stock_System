@@ -274,6 +274,70 @@ class PutAwayTask(Base):
     )
 
 
+RETURN_STATUSES = ("intake", "inspection", "disposition_decided", "closed")
+RETURN_REASONS = ("defective", "wrong_item", "customer_request", "expired", "other")
+RETURN_DISPOSITIONS = ("restock", "scrap", "repair")
+
+
+class Return(Base):
+    __tablename__ = "returns"
+
+    return_id = Column(Integer, primary_key=True, autoincrement=True)
+    product_id = Column(Integer, ForeignKey("products.product_id"), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    reason = Column(String(50), nullable=False)
+    reference = Column(String(255), nullable=True)
+    return_user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+    receiving_notes = Column(String(1000), nullable=True)
+    status = Column(String(50), nullable=False, default="intake")
+    disposition = Column(String(50), nullable=True)
+    disposition_notes = Column(String(1000), nullable=True)
+    ledger_id = Column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        ForeignKey("inventory_ledger.ledger_id"),
+        nullable=True,
+    )
+    scrap_ledger_id = Column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        ForeignKey("inventory_ledger.ledger_id"),
+        nullable=True,
+    )
+    credit_memo_id = Column(
+        Integer,
+        ForeignKey("credit_memos.credit_memo_id", use_alter=True, name="fk_returns_credit_memo"),
+        nullable=True,
+    )
+    created_at = Column(DateTime, default=datetime.utcnow)
+    closed_at = Column(DateTime, nullable=True)
+
+    __table_args__ = (
+        Index("idx_returns_product", "product_id"),
+        Index("idx_returns_status", "status"),
+        Index("idx_returns_reason", "reason"),
+        Index("idx_returns_created", "created_at"),
+    )
+
+
+CREDIT_MEMO_STATUSES = ("draft", "issued", "applied")
+
+
+class CreditMemo(Base):
+    __tablename__ = "credit_memos"
+
+    credit_memo_id = Column(Integer, primary_key=True, autoincrement=True)
+    return_id = Column(Integer, ForeignKey("returns.return_id"), nullable=False)
+    amount = Column(Numeric(12, 2), nullable=False, default=0)
+    issued_date = Column(DateTime, nullable=True)
+    status = Column(String(50), nullable=False, default="draft")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index("idx_credit_memo_return", "return_id"),
+        Index("idx_credit_memo_status", "status"),
+    )
+
+
 class LowStockAlert(Base):
     __tablename__ = "low_stock_alerts"
 

@@ -292,6 +292,65 @@ class ReceiptOut(BaseModel):
     lines: list[ReceiptLineOut] = []
 
 
+# --- Returns ---
+ReturnStatus = Literal["intake", "inspection", "disposition_decided", "closed"]
+ReturnReason = Literal["defective", "wrong_item", "customer_request", "expired", "other"]
+ReturnDisposition = Literal["restock", "scrap", "repair"]
+
+
+class ReturnCreate(BaseModel):
+    product_id: int
+    quantity: int = Field(gt=0)
+    reason: ReturnReason
+    reference: Optional[str] = None
+    receiving_notes: Optional[str] = None
+
+
+class ReturnDispositionUpdate(BaseModel):
+    disposition: ReturnDisposition
+    disposition_notes: Optional[str] = None
+    credit_amount: Optional[Decimal] = None
+
+
+CreditMemoStatus = Literal["draft", "issued", "applied"]
+
+
+class CreditMemoOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    credit_memo_id: int
+    return_id: int
+    amount: Decimal
+    issued_date: Optional[datetime] = None
+    status: CreditMemoStatus
+    created_at: datetime
+
+
+class ReturnOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    return_id: int
+    product_id: int
+    quantity: int
+    reason: ReturnReason
+    reference: Optional[str] = None
+    return_user_id: int
+    receiving_notes: Optional[str] = None
+    status: ReturnStatus
+    disposition: Optional[ReturnDisposition] = None
+    disposition_notes: Optional[str] = None
+    ledger_id: Optional[int] = None
+    scrap_ledger_id: Optional[int] = None
+    credit_memo_id: Optional[int] = None
+    created_at: datetime
+    closed_at: Optional[datetime] = None
+
+
+class ReturnListOut(BaseModel):
+    items: list[ReturnOut]
+    total: int
+    limit: int
+    offset: int
+
+
 class PutAwayTaskOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     task_id: int
