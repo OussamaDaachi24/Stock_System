@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-electron
+.git
+.github
+*.md
+.env
+.DS_Store

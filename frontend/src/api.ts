@@ -2,7 +2,9 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth, useToast } from "./store";
 
-export const API_BASE = (import.meta as any).env?.VITE_API_BASE || "http://localhost:8000";
+// Use relative path if VITE_API_BASE not set; docker nginx will proxy to /api
+const apiBase = (import.meta as any).env?.VITE_API_BASE;
+export const API_BASE = apiBase || (typeof window !== 'undefined' ? window.location.origin : "http://localhost:8000");
 
 export const api = axios.create({ baseURL: API_BASE });
 
