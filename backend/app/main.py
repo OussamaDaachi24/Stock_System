@@ -10,6 +10,9 @@ from .db import Base, engine
 from .routers.auth import admin_router, router as auth_router
 from .routers.inventory import router as inventory_router
 from .routers.products import router as products_router
+from .routers.purchase_orders import router as purchase_orders_router
+from .routers.receipts import router as receipts_router
+from .routers.suppliers import router as suppliers_router
 
 
 logging.basicConfig(level=logging.INFO, format='{"level":"%(levelname)s","msg":"%(message)s"}')
@@ -33,6 +36,9 @@ def create_app() -> FastAPI:
     app.include_router(admin_router)
     app.include_router(products_router)
     app.include_router(inventory_router)
+    app.include_router(suppliers_router)
+    app.include_router(purchase_orders_router)
+    app.include_router(receipts_router)
 
     @app.get("/api/v1/health")
     def health():

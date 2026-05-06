@@ -156,3 +156,149 @@ class ReconcileResult(BaseModel):
     products_checked: int
     mismatches_found: int
     corrected: list[dict]
+
+
+# --- Suppliers ---
+class SupplierCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=255)
+    contact_email: Optional[EmailStr] = None
+    contact_phone: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    payment_terms: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class SupplierUpdate(BaseModel):
+    name: Optional[str] = None
+    contact_email: Optional[EmailStr] = None
+    contact_phone: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    payment_terms: Optional[str] = None
+    notes: Optional[str] = None
+    active: Optional[int] = None
+
+
+class SupplierOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    supplier_id: int
+    name: str
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    payment_terms: Optional[str] = None
+    notes: Optional[str] = None
+    active: int
+    created_at: datetime
+
+
+# --- Purchase Orders ---
+POStatus = Literal["open", "partial", "closed", "cancelled"]
+
+
+class POLineIn(BaseModel):
+    product_id: int
+    quantity: int = Field(gt=0)
+    unit_price: Optional[Decimal] = None
+
+
+class POLineOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    po_line_id: int
+    po_id: int
+    product_id: int
+    quantity: int
+    received_quantity: int
+    unit_price: Optional[Decimal] = None
+
+
+class PurchaseOrderCreate(BaseModel):
+    supplier_id: int
+    po_number: str = Field(min_length=1, max_length=100)
+    expected_delivery_date: Optional[datetime] = None
+    notes: Optional[str] = None
+    lines: list[POLineIn] = Field(min_length=1)
+
+
+class PurchaseOrderOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    po_id: int
+    supplier_id: int
+    po_number: str
+    status: POStatus
+    expected_delivery_date: Optional[datetime] = None
+    notes: Optional[str] = None
+    created_at: datetime
+    lines: list[POLineOut] = []
+
+
+# --- Receipts ---
+ReceiptStatus = Literal["open", "partial", "completed"]
+
+
+class ReceiptLineIn(BaseModel):
+    product_id: int
+    quantity: int = Field(gt=0)
+    lot_batch: Optional[str] = None
+    serial_numbers: Optional[list[str]] = None
+    location: Optional[str] = None
+
+
+class ReceiptLineOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    receipt_line_id: int
+    receipt_id: int
+    product_id: int
+    po_line_id: Optional[int] = None
+    quantity: int
+    lot_batch: Optional[str] = None
+    serial_numbers: Optional[list[str]] = None
+    location: Optional[str] = None
+    ledger_id: Optional[int] = None
+    flagged: Optional[str] = None
+
+
+class ReceiptCreate(BaseModel):
+    po_id: Optional[int] = None
+    supplier_id: Optional[int] = None
+    packing_info: Optional[dict] = None
+    lines: list[ReceiptLineIn] = Field(min_length=1)
+
+
+class DiscrepancyOut(BaseModel):
+    product_id: int
+    type: str  # over | under | unknown
+    expected: Optional[int] = None
+    received: int
+    note: Optional[str] = None
+
+
+class ReceiptOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    receipt_id: int
+    po_id: Optional[int] = None
+    supplier_id: Optional[int] = None
+    receiving_user_id: int
+    status: ReceiptStatus
+    packing_info: Optional[dict] = None
+    discrepancies: Optional[list[dict]] = None
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    lines: list[ReceiptLineOut] = []
+
+
+class PutAwayTaskOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    task_id: int
+    receipt_line_id: int
+    product_id: int
+    quantity: int
+    from_location: str
+    to_location: Optional[str] = None
+    status: str
+    created_at: datetime
