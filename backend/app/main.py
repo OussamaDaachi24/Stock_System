@@ -12,6 +12,7 @@ from .routers.inventory import router as inventory_router
 from .routers.products import router as products_router
 from .routers.purchase_orders import router as purchase_orders_router
 from .routers.receipts import router as receipts_router
+from .routers.reservations import router as reservations_router
 from .routers.returns import credit_router as credit_memos_router, router as returns_router
 from .routers.suppliers import router as suppliers_router
 
@@ -42,6 +43,7 @@ def create_app() -> FastAPI:
     app.include_router(receipts_router)
     app.include_router(returns_router)
     app.include_router(credit_memos_router)
+    app.include_router(reservations_router)
 
     @app.get("/api/v1/health")
     def health():

@@ -338,6 +338,39 @@ class CreditMemo(Base):
     )
 
 
+RESERVATION_STATUSES = ("active", "released", "expired")
+
+
+class Reservation(Base):
+    __tablename__ = "reservations"
+
+    reservation_id = Column(Integer, primary_key=True, autoincrement=True)
+    product_id = Column(Integer, ForeignKey("products.product_id"), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    reference = Column(String(255), nullable=True)
+    status = Column(String(50), nullable=False, default="active")
+    expiry_timestamp = Column(DateTime, nullable=False)
+    reserve_ledger_id = Column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        ForeignKey("inventory_ledger.ledger_id"),
+        nullable=True,
+    )
+    release_ledger_id = Column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        ForeignKey("inventory_ledger.ledger_id"),
+        nullable=True,
+    )
+    created_at = Column(DateTime, default=datetime.utcnow)
+    released_at = Column(DateTime, nullable=True)
+    created_by = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+
+    __table_args__ = (
+        Index("idx_reservations_product", "product_id"),
+        Index("idx_reservations_status", "status", "expiry_timestamp"),
+        Index("idx_reservations_reference", "reference"),
+    )
+
+
 class LowStockAlert(Base):
     __tablename__ = "low_stock_alerts"
 

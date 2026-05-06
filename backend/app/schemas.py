@@ -351,6 +351,39 @@ class ReturnListOut(BaseModel):
     offset: int
 
 
+# --- Reservations ---
+ReservationStatus = Literal["active", "released", "expired"]
+
+
+class ReservationCreate(BaseModel):
+    product_id: int
+    quantity: int = Field(gt=0)
+    reference: Optional[str] = None
+    expiry_days: int = Field(default=30, ge=1, le=365)
+
+
+class ReservationOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    reservation_id: int
+    product_id: int
+    quantity: int
+    reference: Optional[str] = None
+    status: ReservationStatus
+    expiry_timestamp: datetime
+    reserve_ledger_id: Optional[int] = None
+    release_ledger_id: Optional[int] = None
+    created_at: datetime
+    released_at: Optional[datetime] = None
+    created_by: int
+
+
+class ReservationListOut(BaseModel):
+    items: list[ReservationOut]
+    total: int
+    limit: int
+    offset: int
+
+
 class PutAwayTaskOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     task_id: int
