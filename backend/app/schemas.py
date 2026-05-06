@@ -384,6 +384,63 @@ class ReservationListOut(BaseModel):
     offset: int
 
 
+# --- Reports / Backups ---
+ExportFormat = Literal["csv", "json"]
+
+
+class InventoryExportCreate(BaseModel):
+    format: ExportFormat = "csv"
+    category: Optional[str] = None
+    supplier_id: Optional[int] = None
+    date_from: Optional[datetime] = None
+    date_to: Optional[datetime] = None
+
+
+class ExportJobOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    job_id: str
+    format: str
+    status: str
+    download_url: Optional[str] = None
+    expires_at: Optional[datetime] = None
+    error: Optional[str] = None
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+
+
+class BackupOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    backup_id: str
+    status: str
+    size_bytes: Optional[int] = None
+    notes: Optional[str] = None
+    error: Optional[str] = None
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+
+
+class RestoreRequest(BaseModel):
+    backup_id: str
+    verify: bool = True
+
+
+class HealthOut(BaseModel):
+    service: str
+    status: str
+    db: str
+    redis: str
+
+
+class MetricsOut(BaseModel):
+    products: int
+    ledger_entries: int
+    active_reservations: int
+    open_receipts: int
+    pending_returns: int
+    low_stock: int
+    db_url_scheme: str
+
+
 class PutAwayTaskOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     task_id: int

@@ -15,6 +15,8 @@ from .routers.receipts import router as receipts_router
 from .routers.reservations import router as reservations_router
 from .routers.returns import credit_router as credit_memos_router, router as returns_router
 from .routers.suppliers import router as suppliers_router
+from .routers.reports import router as reports_router
+from .routers.admin_ops import router as admin_ops_router, health_router
 
 
 logging.basicConfig(level=logging.INFO, format='{"level":"%(levelname)s","msg":"%(message)s"}')
@@ -44,6 +46,9 @@ def create_app() -> FastAPI:
     app.include_router(returns_router)
     app.include_router(credit_memos_router)
     app.include_router(reservations_router)
+    app.include_router(reports_router)
+    app.include_router(admin_ops_router)
+    app.include_router(health_router)
 
     @app.get("/api/v1/health")
     def health():

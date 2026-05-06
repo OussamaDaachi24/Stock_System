@@ -385,3 +385,40 @@ class LowStockAlert(Base):
         UniqueConstraint("product_id", "alert_date", name="uq_low_stock_per_day"),
         Index("idx_low_stock_date", "alert_date"),
     )
+
+
+EXPORT_JOB_STATUSES = ("queued", "in_progress", "completed", "failed")
+
+
+class ExportJob(Base):
+    __tablename__ = "export_jobs"
+
+    job_id = Column(String(64), primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+    format = Column(String(20), nullable=False, default="csv")
+    filters = Column(JSON, nullable=True)
+    status = Column(String(20), nullable=False, default="queued")
+    file_path = Column(String(500), nullable=True)
+    download_url = Column(String(500), nullable=True)
+    expires_at = Column(DateTime, nullable=True)
+    error = Column(String(1000), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
+
+
+BACKUP_STATUSES = ("queued", "running", "completed", "failed")
+
+
+class Backup(Base):
+    __tablename__ = "backups"
+
+    backup_id = Column(String(64), primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+    status = Column(String(20), nullable=False, default="queued")
+    file_path = Column(String(500), nullable=True)
+    size_bytes = Column(Integer, nullable=True)
+    notes = Column(String(500), nullable=True)
+    error = Column(String(1000), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
+
