@@ -1,0 +1,28 @@
+{
+  "title": "أوامر الشراء",
+  "count": "{{count}} أمر شراء",
+  "newPO": "+ أمر شراء جديد",
+  "table": {
+    "po": "رقم الأمر",
+    "supplier": "المورد",
+    "status": "الحالة",
+    "lines": "البنود",
+    "created": "تاريخ الإنشاء",
+    "sku": "الرمز",
+    "qty": "الكمية",
+    "unitPrice": "سعر الوحدة"
+  },
+  "modal": {
+    "title": "إنشاء أمر شراء",
+    "supplier": "المورد",
+    "supplierPlaceholder": "— اختر —",
+    "po": "رقم الأمر",
+    "addProduct": "إضافة منتج",
+    "searchPlaceholder": "ابحث بالرمز/الاسم",
+    "unitPricePlaceholder": "0.00"
+  },
+  "toast": {
+    "missingFields": "المورد ورقم الأمر وبند واحد على الأقل مطلوبة",
+    "created": "تم إنشاء أمر الشراء"
+  }
+}

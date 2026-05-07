@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { fetchLowStock, fetchMetrics, fetchReceipts, fetchReturns, fetchReservations } from "../api";
 import { Link } from "react-router-dom";
+import { formatNumber } from "../i18n/format";
 
 export default function DashboardPage() {
+  const { t } = useTranslation(["dashboard", "nav"]);
   const [metrics, setMetrics] = useState<any>(null);
   const [low, setLow] = useState<any[]>([]);
   const [receipts, setReceipts] = useState<any[]>([]);
@@ -30,40 +33,45 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h2>Dashboard</h2>
+      <h2>{t("title")}</h2>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 16 }}>
-        <Stat label="Products" value={metrics?.products ?? "—"} />
-        <Stat label="Ledger entries" value={metrics?.ledger_entries ?? "—"} />
-        <Stat label="Active reservations" value={metrics?.active_reservations ?? reservations.length} />
-        <Stat label="Open receipts" value={metrics?.open_receipts ?? receipts.length} />
-        <Stat label="Pending returns" value={metrics?.pending_returns ?? returns.length} />
-        <Stat label="Low-stock items" value={metrics?.low_stock ?? low.length} />
+        <Stat label={t("stats.products")} value={metrics?.products} />
+        <Stat label={t("stats.ledgerEntries")} value={metrics?.ledger_entries} />
+        <Stat label={t("stats.activeReservations")} value={metrics?.active_reservations ?? reservations.length} />
+        <Stat label={t("stats.openReceipts")} value={metrics?.open_receipts ?? receipts.length} />
+        <Stat label={t("stats.pendingReturns")} value={metrics?.pending_returns ?? returns.length} />
+        <Stat label={t("stats.lowStock")} value={metrics?.low_stock ?? low.length} />
       </div>
 
       <div className="card" style={{ marginBottom: 12 }}>
-        <h3>Quick links</h3>
+        <h3>{t("quickLinks")}</h3>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <Link to="/receiving" className="btn">Receiving</Link>
-          <Link to="/returns" className="btn">Returns</Link>
-          <Link to="/reservations" className="btn">Reservations</Link>
-          <Link to="/reports" className="btn secondary">Reports</Link>
+          <Link to="/receiving" className="btn">{t("receiving", { ns: "nav" })}</Link>
+          <Link to="/returns" className="btn">{t("returns", { ns: "nav" })}</Link>
+          <Link to="/reservations" className="btn">{t("reservations", { ns: "nav" })}</Link>
+          <Link to="/reports" className="btn secondary">{t("reports", { ns: "nav" })}</Link>
         </div>
       </div>
 
       <div className="card">
-        <h3>Low-stock products</h3>
+        <h3>{t("lowStockTitle")}</h3>
         {low.length === 0 ? (
-          <p style={{ color: "#6b7280" }}>All products above reorder threshold.</p>
+          <p className="empty" style={{ padding: 0, textAlign: "start" }}>{t("lowStockEmpty")}</p>
         ) : (
           <table>
-            <thead><tr><th>SKU</th><th>Name</th><th>On hand</th><th>Threshold</th></tr></thead>
+            <thead><tr>
+              <th>{t("table.sku")}</th>
+              <th>{t("table.name")}</th>
+              <th>{t("table.onHand")}</th>
+              <th>{t("table.threshold")}</th>
+            </tr></thead>
             <tbody>
               {low.slice(0, 10).map((p) => (
                 <tr key={p.product_id}>
                   <td>{p.sku}</td>
                   <td>{p.name}</td>
-                  <td>{p.on_hand}</td>
-                  <td>{p.reorder_threshold}</td>
+                  <td>{formatNumber(p.on_hand)}</td>
+                  <td>{formatNumber(p.reorder_threshold)}</td>
                 </tr>
               ))}
             </tbody>
@@ -77,8 +85,8 @@ export default function DashboardPage() {
 function Stat({ label, value }: { label: string; value: any }) {
   return (
     <div className="card">
-      <div style={{ color: "#6b7280", fontSize: 12 }}>{label}</div>
-      <div style={{ fontSize: 26, fontWeight: 600 }}>{value}</div>
+      <div className="stat-label">{label}</div>
+      <div className="stat-value">{value === null || value === undefined ? "—" : formatNumber(value, { maximumFractionDigits: 0 })}</div>
     </div>
   );
 }

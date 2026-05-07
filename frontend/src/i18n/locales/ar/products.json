@@ -1,0 +1,30 @@
+{
+  "title": "المنتجات",
+  "searchPlaceholder": "ابحث بالرمز أو الاسم أو الباركود",
+  "newProduct": "+ منتج جديد",
+  "table": {
+    "sku": "الرمز",
+    "name": "الاسم",
+    "barcode": "الباركود",
+    "uom": "الوحدة",
+    "category": "الفئة",
+    "reorder": "إعادة الطلب"
+  },
+  "empty": "لا توجد منتجات.",
+  "pagination": "{{total}} إجمالي · يُعرض {{from}}–{{to}}",
+  "form": {
+    "newTitle": "منتج جديد",
+    "editTitle": "تعديل {{sku}}",
+    "sku": "الرمز *",
+    "barcode": "الباركود (مسح أو إدخال)",
+    "name": "الاسم *",
+    "uom": "وحدة القياس *",
+    "category": "الفئة",
+    "costPrice": "سعر التكلفة",
+    "sellPrice": "سعر البيع",
+    "reorderThreshold": "حد إعادة الطلب",
+    "location": "الموقع",
+    "createdToast": "تم إنشاء المنتج",
+    "updatedToast": "تم تحديث المنتج"
+  }
+}

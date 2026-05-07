@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { createInventoryExport, exportDownloadUrl, getExportJob } from "../api";
 import { useAuth, useToast } from "../store";
+import { formatDateTime } from "../i18n/format";
 
 export default function ReportsPage() {
+  const { t } = useTranslation(["reports", "common", "enums"]);
   const toast = useToast();
   const token = useAuth((s) => s.accessToken);
   const [format, setFormat] = useState<"csv" | "json">("csv");
@@ -50,7 +53,7 @@ export default function ReportsPage() {
     const r = await fetch(exportDownloadUrl(job.job_id), {
       headers: { Authorization: `Bearer ${token}` },
     });
-    if (!r.ok) { toast.show("Download failed", "error"); return; }
+    if (!r.ok) { toast.show(t("toast.downloadFailed"), "error"); return; }
     const blob = await r.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -62,34 +65,35 @@ export default function ReportsPage() {
 
   return (
     <div>
-      <h2>Reports</h2>
+      <h2>{t("title")}</h2>
       <div className="card">
-        <h3>Inventory export</h3>
+        <h3>{t("exportTitle")}</h3>
         <div className="row">
           <div>
-            <label>Format</label>
+            <label>{t("fields.format")}</label>
             <select className="input" value={format} onChange={(e) => setFormat(e.target.value as any)}>
-              <option value="csv">CSV</option>
-              <option value="json">JSON</option>
+              <option value="csv">{t("format.csv", { ns: "enums" })}</option>
+              <option value="json">{t("format.json", { ns: "enums" })}</option>
             </select>
           </div>
           <div>
-            <label>Category (optional)</label>
+            <label>{t("fields.category")}</label>
             <input className="input" value={category} onChange={(e) => setCategory(e.target.value)} />
           </div>
         </div>
-        <label>Supplier ID (optional)</label>
+        <label>{t("fields.supplierId")}</label>
         <input className="input" value={supplierId} onChange={(e) => setSupplierId(e.target.value)} />
         <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-          <button className="btn" disabled={polling} onClick={start}>Generate</button>
+          <button className="btn" disabled={polling} onClick={start}>{t("generate")}</button>
           {job && job.status === "completed" && (
-            <button className="btn secondary" onClick={download}>Download</button>
+            <button className="btn secondary" onClick={download}>{t("download")}</button>
           )}
         </div>
         {job && (
           <div style={{ marginTop: 12, fontSize: 13 }}>
-            Job <code>{job.job_id}</code> — status: <strong>{job.status}</strong>
-            {job.expires_at && <span> · expires {new Date(job.expires_at).toLocaleString()}</span>}
+            {t("jobInfo")} <code>{job.job_id}</code> — {t("status")}:{" "}
+            <strong>{t(`status.${job.status}`, { ns: "enums", defaultValue: job.status })}</strong>
+            {job.expires_at && <span> · {t("expires", { date: formatDateTime(job.expires_at) })}</span>}
             {job.error && <div className="error-text">{job.error}</div>}
           </div>
         )}

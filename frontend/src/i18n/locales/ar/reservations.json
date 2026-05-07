@@ -1,0 +1,29 @@
+{
+  "title": "الحجوزات",
+  "quickReserve": "حجز سريع",
+  "fields": {
+    "product": "المنتج",
+    "reference": "مرجع الطلب / المشروع",
+    "quantity": "الكمية",
+    "expiryDays": "الصلاحية (بالأيام)"
+  },
+  "availability": "{{sku}} — المتاح: {{available}}",
+  "submit": "حجز",
+  "activeTitle": "الحجوزات النشطة",
+  "table": {
+    "id": "المعرّف",
+    "product": "المنتج",
+    "qty": "الكمية",
+    "ref": "المرجع",
+    "expires": "تنتهي في"
+  },
+  "expiresIn": "{{date}} ({{days}} يوم)",
+  "empty": "لا توجد حجوزات نشطة.",
+  "toast": {
+    "lookupFirst": "ابحث عن منتج أولًا",
+    "insufficient": "المخزون غير كافٍ (المتاح {{available}})",
+    "created": "تم إنشاء الحجز",
+    "released": "تم إطلاق الحجز",
+    "confirmRelease": "هل تريد إطلاق هذا الحجز؟"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "title": "Admin",
+  "systemStatus": "System status",
+  "service": "Service",
+  "db": "DB",
+  "cache": "Cache",
+  "metricsLine": "{{products}} products · {{ledger}} ledger entries · {{reservations}} active reservations · {{lowStock}} low-stock",
+  "users": "Users",
+  "newUser": "+ New user",
+  "table": {
+    "email": "Email",
+    "name": "Name",
+    "role": "Role",
+    "status": "Status",
+    "id": "ID",
+    "size": "Size",
+    "created": "Created"
+  },
+  "backups": "Backups",
+  "triggerBackup": "Trigger backup",
+  "modal": {
+    "title": "Create user",
+    "email": "Email",
+    "name": "Name",
+    "password": "Password",
+    "role": "Role"
+  },
+  "toast": {
+    "passwordTooShort": "Password must be at least 8 chars",
+    "userCreated": "User created",
+    "backupCreated": "Backup created",
+    "restoreComplete": "Restore complete",
+    "confirmRestore": "Restore backup {{id}}? This will overwrite current data."
+  }
+}

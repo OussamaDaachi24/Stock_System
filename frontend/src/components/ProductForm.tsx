@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ProductDTO, createProduct, updateProduct } from "../api";
 import { useToast } from "../store";
 
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function ProductForm({ mode, product, onClose, onSaved }: Props) {
+  const { t } = useTranslation(["products", "common", "enums"]);
   const showToast = useToast((s) => s.show);
   const [form, setForm] = useState<Partial<ProductDTO>>(
     product ?? { unit_of_measure: "piece" }
@@ -38,7 +40,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
           reorder_threshold: form.reorder_threshold ?? null,
           location: form.location || null,
         });
-        showToast("Product created");
+        showToast(t("form.createdToast"));
       } else if (product) {
         await updateProduct(product.product_id, {
           name: form.name,
@@ -48,7 +50,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
           reorder_threshold: form.reorder_threshold ?? null,
           location: form.location || null,
         });
-        showToast("Product updated");
+        showToast(t("form.updatedToast"));
       }
       onSaved();
     } catch {
@@ -61,11 +63,11 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
   return (
     <div className="modal-bg" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h3>{mode === "create" ? "New product" : `Edit ${product?.sku}`}</h3>
+        <h3>{mode === "create" ? t("form.newTitle") : t("form.editTitle", { sku: product?.sku })}</h3>
         <form onSubmit={onSubmit}>
           <div className="row">
             <div>
-              <label>SKU *</label>
+              <label>{t("form.sku")}</label>
               <input
                 className="input"
                 value={form.sku ?? ""}
@@ -75,7 +77,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
               />
             </div>
             <div>
-              <label>Barcode (scan or type)</label>
+              <label>{t("form.barcode")}</label>
               <input
                 className="input"
                 value={form.barcode ?? ""}
@@ -85,7 +87,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
               />
             </div>
           </div>
-          <label>Name *</label>
+          <label>{t("form.name")}</label>
           <input
             className="input"
             value={form.name ?? ""}
@@ -94,7 +96,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
           />
           <div className="row">
             <div>
-              <label>Unit of measure *</label>
+              <label>{t("form.uom")}</label>
               <select
                 className="input"
                 value={form.unit_of_measure ?? "piece"}
@@ -102,12 +104,12 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
                 onChange={(e) => set("unit_of_measure", e.target.value)}
               >
                 {UOM_OPTIONS.map((u) => (
-                  <option key={u} value={u}>{u}</option>
+                  <option key={u} value={u}>{t(`uom.${u}`, { ns: "enums" })}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label>Category</label>
+              <label>{t("form.category")}</label>
               <input
                 className="input"
                 value={form.category ?? ""}
@@ -117,7 +119,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
           </div>
           <div className="row">
             <div>
-              <label>Cost price</label>
+              <label>{t("form.costPrice")}</label>
               <input
                 className="input"
                 type="number"
@@ -127,7 +129,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
               />
             </div>
             <div>
-              <label>Sell price</label>
+              <label>{t("form.sellPrice")}</label>
               <input
                 className="input"
                 type="number"
@@ -139,7 +141,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
           </div>
           <div className="row">
             <div>
-              <label>Reorder threshold</label>
+              <label>{t("form.reorderThreshold")}</label>
               <input
                 className="input"
                 type="number"
@@ -150,7 +152,7 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
               />
             </div>
             <div>
-              <label>Location</label>
+              <label>{t("form.location")}</label>
               <input
                 className="input"
                 value={form.location ?? ""}
@@ -160,10 +162,14 @@ export default function ProductForm({ mode, product, onClose, onSaved }: Props) 
           </div>
           <div style={{ marginTop: 18, display: "flex", gap: 8, justifyContent: "flex-end" }}>
             <button type="button" className="btn secondary" onClick={onClose}>
-              Cancel
+              {t("actions.cancel", { ns: "common" })}
             </button>
             <button type="submit" className="btn" disabled={saving}>
-              {saving ? "Saving..." : mode === "create" ? "Create" : "Save"}
+              {saving
+                ? t("actions.saving", { ns: "common" })
+                : mode === "create"
+                  ? t("actions.create", { ns: "common" })
+                  : t("actions.save", { ns: "common" })}
             </button>
           </div>
         </form>

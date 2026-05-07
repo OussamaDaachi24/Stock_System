@@ -1,0 +1,31 @@
+{
+  "title": "الاستلام",
+  "poId": "رقم أمر الشراء (اختياري)",
+  "poIdPlaceholder": "123",
+  "scan": "مسح / بحث بالرمز",
+  "scanPlaceholder": "امسح الباركود أو أدخل الرمز",
+  "linesTitle": "البنود",
+  "table": {
+    "sku": "الرمز",
+    "name": "الاسم",
+    "qty": "الكمية",
+    "lotBatch": "الدفعة",
+    "location": "الموقع",
+    "id": "المعرّف",
+    "po": "أمر الشراء",
+    "status": "الحالة",
+    "discrepancies": "الفروقات",
+    "created": "تاريخ الإنشاء"
+  },
+  "emptyLines": "امسح باركود أو أدخل رمزًا لإضافة بنود.",
+  "saveReceipt": "حفظ الإيصال",
+  "saveAndComplete": "حفظ وإغلاق",
+  "recentTitle": "الإيصالات الأخيرة",
+  "toast": {
+    "productNotFound": "المنتج غير موجود: {{value}}",
+    "addAtLeastOneLine": "أضف بندًا واحدًا على الأقل",
+    "createdAndCompleted": "تم إنشاء وإغلاق الإيصال رقم {{id}}",
+    "created": "تم إنشاء الإيصال رقم {{id}}",
+    "discrepanciesFlagged": "تم رصد {{count}} فروقات"
+  }
+}

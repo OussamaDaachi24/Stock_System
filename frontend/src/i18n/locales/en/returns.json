@@ -1,0 +1,34 @@
+{
+  "title": "Returns",
+  "createTitle": "Create return",
+  "fields": {
+    "product": "Product (SKU/name/barcode)",
+    "quantity": "Quantity",
+    "reason": "Reason",
+    "reference": "Order reference (optional)",
+    "notes": "Notes"
+  },
+  "selected": "Selected: {{sku}}",
+  "submit": "Create return",
+  "queueTitle": "Return queue",
+  "table": {
+    "id": "ID",
+    "product": "Product",
+    "qty": "Qty",
+    "reason": "Reason",
+    "status": "Status",
+    "disposition": "Disposition"
+  },
+  "modal": {
+    "title": "Return #{{id}} — Inspect",
+    "disposition": "Disposition",
+    "notes": "Notes",
+    "credit": "Credit amount (optional)",
+    "creditPlaceholder": "0.00"
+  },
+  "toast": {
+    "lookupFirst": "Look up a product first",
+    "created": "Return created",
+    "dispositionSaved": "Disposition saved"
+  }
+}

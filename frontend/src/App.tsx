@@ -1,5 +1,8 @@
 import { Navigate, Route, Routes, Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth, useToast } from "./store";
+import { useDirection } from "./hooks/useDirection";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import LoginPage from "./pages/LoginPage";
 import ProductsPage from "./pages/ProductsPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -14,28 +17,32 @@ import AdminPage from "./pages/AdminPage";
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const { user, clear } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation(["nav", "common", "enums"]);
   if (!user) return <Navigate to="/login" replace />;
   const isAdmin = user.role === "admin";
   return (
     <>
       <nav className="nav">
-        <strong>Stock System</strong>
-        <Link to="/dashboard">Dashboard</Link>
-        <Link to="/products">Products</Link>
-        <Link to="/receiving">Receiving</Link>
-        <Link to="/returns">Returns</Link>
-        <Link to="/reservations">Reservations</Link>
-        <Link to="/suppliers">Suppliers</Link>
-        <Link to="/purchase-orders">POs</Link>
-        <Link to="/reports">Reports</Link>
-        {isAdmin && <Link to="/admin">Admin</Link>}
+        <strong>{t("appName", { ns: "common" })}</strong>
+        <Link to="/dashboard">{t("dashboard", { ns: "nav" })}</Link>
+        <Link to="/products">{t("products", { ns: "nav" })}</Link>
+        <Link to="/receiving">{t("receiving", { ns: "nav" })}</Link>
+        <Link to="/returns">{t("returns", { ns: "nav" })}</Link>
+        <Link to="/reservations">{t("reservations", { ns: "nav" })}</Link>
+        <Link to="/suppliers">{t("suppliers", { ns: "nav" })}</Link>
+        <Link to="/purchase-orders">{t("purchaseOrders", { ns: "nav" })}</Link>
+        <Link to="/reports">{t("reports", { ns: "nav" })}</Link>
+        {isAdmin && <Link to="/admin">{t("admin", { ns: "nav" })}</Link>}
         <span className="spacer" />
-        <span>{user.name} ({user.role})</span>
+        <span>
+          {user.name} · <span style={{ color: "var(--c-text-faint)" }}>{t(`role.${user.role}`, { ns: "enums" })}</span>
+        </span>
+        <LanguageSwitcher />
         <button
           className="btn secondary"
           onClick={() => { clear(); navigate("/login"); }}
         >
-          Logout
+          {t("actions.logout", { ns: "common" })}
         </button>
       </nav>
       <div className="container">{children}</div>
@@ -54,6 +61,7 @@ function P({ el }: { el: React.ReactNode }) {
 }
 
 export default function App() {
+  useDirection();
   return (
     <>
       <Routes>

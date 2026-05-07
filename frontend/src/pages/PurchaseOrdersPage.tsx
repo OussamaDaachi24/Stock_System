@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   createPurchaseOrder,
   fetchProducts,
@@ -6,10 +7,12 @@ import {
   fetchSuppliers,
 } from "../api";
 import { useAuth, useToast } from "../store";
+import { formatDate } from "../i18n/format";
 
 interface Line { product_id: number; sku: string; quantity: number; unit_price?: string; }
 
 export default function PurchaseOrdersPage() {
+  const { t } = useTranslation(["purchaseOrders", "common", "enums"]);
   const role = useAuth((s) => s.user?.role);
   const canMutate = role === "admin" || role === "manager";
   const [items, setItems] = useState<any[]>([]);
@@ -20,22 +23,28 @@ export default function PurchaseOrdersPage() {
 
   return (
     <div>
-      <h2>Purchase Orders</h2>
+      <h2>{t("title")}</h2>
       <div className="card">
         <div className="toolbar">
-          <span>{items.length} POs</span>
-          {canMutate && <button className="btn" onClick={() => setCreating(true)}>+ New PO</button>}
+          <span>{t("count", { count: items.length })}</span>
+          {canMutate && <button className="btn" onClick={() => setCreating(true)}>{t("newPO")}</button>}
         </div>
         <table>
-          <thead><tr><th>PO #</th><th>Supplier</th><th>Status</th><th>Lines</th><th>Created</th></tr></thead>
+          <thead><tr>
+            <th>{t("table.po")}</th>
+            <th>{t("table.supplier")}</th>
+            <th>{t("table.status")}</th>
+            <th>{t("table.lines")}</th>
+            <th>{t("table.created")}</th>
+          </tr></thead>
           <tbody>
             {items.map((p) => (
               <tr key={p.po_id}>
                 <td>{p.po_number}</td>
                 <td>#{p.supplier_id}</td>
-                <td>{p.status}</td>
+                <td>{t(`status.${p.status}`, { ns: "enums", defaultValue: p.status })}</td>
                 <td>{p.lines?.length ?? 0}</td>
-                <td>{new Date(p.created_at).toLocaleDateString()}</td>
+                <td>{formatDate(p.created_at)}</td>
               </tr>
             ))}
           </tbody>
@@ -50,6 +59,7 @@ export default function PurchaseOrdersPage() {
 }
 
 function CreatePOModal({ onClose, onSaved }: any) {
+  const { t } = useTranslation(["purchaseOrders", "common", "returns"]);
   const toast = useToast();
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [supplierId, setSupplierId] = useState<number | "">("");
@@ -62,7 +72,7 @@ function CreatePOModal({ onClose, onSaved }: any) {
   async function addProduct() {
     if (!search.trim()) return;
     const data = await fetchProducts({ search, limit: 1, offset: 0 });
-    if (!data.items.length) { toast.show("Product not found", "error"); return; }
+    if (!data.items.length) { toast.show(t("toast.lookupFirst", { ns: "returns" }), "error"); return; }
     const p = data.items[0];
     setLines((prev) => [...prev, { product_id: p.product_id, sku: p.sku, quantity: 1 }]);
     setSearch("");
@@ -70,7 +80,7 @@ function CreatePOModal({ onClose, onSaved }: any) {
 
   async function save() {
     if (!supplierId || !poNumber.trim() || lines.length === 0) {
-      toast.show("Supplier, PO number, and at least one line required", "error");
+      toast.show(t("toast.missingFields"), "error");
       return;
     }
     await createPurchaseOrder({
@@ -82,36 +92,41 @@ function CreatePOModal({ onClose, onSaved }: any) {
         unit_price: l.unit_price || undefined,
       })),
     });
-    toast.show("PO created");
+    toast.show(t("toast.created"));
     onSaved();
   }
 
   return (
     <div className="modal-bg" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()} style={{ width: 640 }}>
-        <h3>Create purchase order</h3>
+        <h3>{t("modal.title")}</h3>
         <div className="row">
           <div>
-            <label>Supplier</label>
+            <label>{t("modal.supplier")}</label>
             <select className="input" value={supplierId} onChange={(e) => setSupplierId(Number(e.target.value))}>
-              <option value="">— select —</option>
+              <option value="">{t("modal.supplierPlaceholder")}</option>
               {suppliers.map((s) => <option key={s.supplier_id} value={s.supplier_id}>{s.name}</option>)}
             </select>
           </div>
           <div>
-            <label>PO #</label>
+            <label>{t("modal.po")}</label>
             <input className="input" value={poNumber} onChange={(e) => setPoNumber(e.target.value)} />
           </div>
         </div>
 
-        <label>Add product</label>
+        <label>{t("modal.addProduct")}</label>
         <div style={{ display: "flex", gap: 8 }}>
-          <input className="input" placeholder="Search SKU/name" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <button className="btn secondary" onClick={addProduct}>Add</button>
+          <input className="input" placeholder={t("modal.searchPlaceholder")} value={search} onChange={(e) => setSearch(e.target.value)} />
+          <button className="btn secondary" onClick={addProduct}>{t("actions.add", { ns: "common" })}</button>
         </div>
 
         <table style={{ marginTop: 12 }}>
-          <thead><tr><th>SKU</th><th>Qty</th><th>Unit price</th><th></th></tr></thead>
+          <thead><tr>
+            <th>{t("table.sku")}</th>
+            <th>{t("table.qty")}</th>
+            <th>{t("table.unitPrice")}</th>
+            <th></th>
+          </tr></thead>
           <tbody>
             {lines.map((l, i) => (
               <tr key={i}>
@@ -121,18 +136,18 @@ function CreatePOModal({ onClose, onSaved }: any) {
                     onChange={(e) => setLines((p) => p.map((x, j) => j === i ? { ...x, quantity: Math.max(1, Number(e.target.value)) } : x))} />
                 </td>
                 <td>
-                  <input className="input" value={l.unit_price || ""} placeholder="0.00"
+                  <input className="input" value={l.unit_price || ""} placeholder={t("modal.unitPricePlaceholder")}
                     onChange={(e) => setLines((p) => p.map((x, j) => j === i ? { ...x, unit_price: e.target.value } : x))} />
                 </td>
-                <td><button className="btn danger" onClick={() => setLines((p) => p.filter((_, j) => j !== i))}>Remove</button></td>
+                <td><button className="btn danger" onClick={() => setLines((p) => p.filter((_, j) => j !== i))}>{t("actions.remove", { ns: "common" })}</button></td>
               </tr>
             ))}
           </tbody>
         </table>
 
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-          <button className="btn" onClick={save}>Create</button>
-          <button className="btn secondary" onClick={onClose}>Cancel</button>
+          <button className="btn" onClick={save}>{t("actions.create", { ns: "common" })}</button>
+          <button className="btn secondary" onClick={onClose}>{t("actions.cancel", { ns: "common" })}</button>
         </div>
       </div>
     </div>

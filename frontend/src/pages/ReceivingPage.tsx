@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ProductDTO,
   completeReceipt,
@@ -7,6 +8,7 @@ import {
   fetchReceipts,
 } from "../api";
 import { useToast } from "../store";
+import { formatDateTime, formatNumber } from "../i18n/format";
 
 interface Line {
   product_id: number;
@@ -18,6 +20,7 @@ interface Line {
 }
 
 export default function ReceivingPage() {
+  const { t } = useTranslation(["receiving", "common", "enums"]);
   const toast = useToast();
   const [poId, setPoId] = useState("");
   const [scan, setScan] = useState("");
@@ -37,7 +40,7 @@ export default function ReceivingPage() {
     if (!scan.trim()) return;
     const data = await fetchProducts({ search: scan.trim(), limit: 1, offset: 0 });
     if (!data.items.length) {
-      toast.show(`Product not found: ${scan}`, "error");
+      toast.show(t("toast.productNotFound", { value: scan }), "error");
       return;
     }
     const p: ProductDTO = data.items[0];
@@ -62,7 +65,7 @@ export default function ReceivingPage() {
 
   async function submit(thenComplete: boolean) {
     if (lines.length === 0) {
-      toast.show("Add at least one line", "error");
+      toast.show(t("toast.addAtLeastOneLine"), "error");
       return;
     }
     setSubmitting(true);
@@ -80,9 +83,13 @@ export default function ReceivingPage() {
       if (thenComplete) {
         await completeReceipt(r.receipt_id);
       }
-      toast.show(`Receipt #${r.receipt_id} created${thenComplete ? " & completed" : ""}`);
+      toast.show(
+        thenComplete
+          ? t("toast.createdAndCompleted", { id: r.receipt_id })
+          : t("toast.created", { id: r.receipt_id })
+      );
       if (r.discrepancies?.length) {
-        toast.show(`${r.discrepancies.length} discrepancies flagged`, "error");
+        toast.show(t("toast.discrepanciesFlagged", { count: r.discrepancies.length }), "error");
       }
       setLines([]);
       setPoId("");
@@ -94,34 +101,41 @@ export default function ReceivingPage() {
 
   return (
     <div>
-      <h2>Receiving</h2>
+      <h2>{t("title")}</h2>
       <div className="card" style={{ marginBottom: 12 }}>
         <div className="row">
           <div>
-            <label>PO ID (optional)</label>
-            <input className="input" value={poId} onChange={(e) => setPoId(e.target.value)} placeholder="123" />
+            <label>{t("poId")}</label>
+            <input className="input" value={poId} onChange={(e) => setPoId(e.target.value)} placeholder={t("poIdPlaceholder")} />
           </div>
           <div>
-            <label>Scan / SKU lookup</label>
+            <label>{t("scan")}</label>
             <form onSubmit={onScan} style={{ display: "flex", gap: 8 }}>
               <input
                 className="input"
                 value={scan}
                 onChange={(e) => setScan(e.target.value)}
-                placeholder="Scan barcode or type SKU"
+                placeholder={t("scanPlaceholder")}
                 autoFocus
               />
-              <button className="btn" type="submit">Add</button>
+              <button className="btn" type="submit">{t("actions.add", { ns: "common" })}</button>
             </form>
           </div>
         </div>
       </div>
 
       <div className="card" style={{ marginBottom: 12 }}>
-        <h3>Lines</h3>
+        <h3>{t("linesTitle")}</h3>
         <table>
           <thead>
-            <tr><th>SKU</th><th>Name</th><th>Qty</th><th>Lot/Batch</th><th>Location</th><th></th></tr>
+            <tr>
+              <th>{t("table.sku")}</th>
+              <th>{t("table.name")}</th>
+              <th>{t("table.qty")}</th>
+              <th>{t("table.lotBatch")}</th>
+              <th>{t("table.location")}</th>
+              <th></th>
+            </tr>
           </thead>
           <tbody>
             {lines.map((l, i) => (
@@ -141,38 +155,44 @@ export default function ReceivingPage() {
                   <input className="input" value={l.location || ""}
                     onChange={(e) => updateLine(i, { location: e.target.value })} />
                 </td>
-                <td><button className="btn danger" onClick={() => removeLine(i)}>Remove</button></td>
+                <td><button className="btn danger" onClick={() => removeLine(i)}>{t("actions.remove", { ns: "common" })}</button></td>
               </tr>
             ))}
             {lines.length === 0 && (
-              <tr><td colSpan={6} style={{ textAlign: "center", padding: 24, color: "#6b7280" }}>
-                Scan a barcode or type a SKU to add lines.
+              <tr><td colSpan={6} className="empty">
+                {t("emptyLines")}
               </td></tr>
             )}
           </tbody>
         </table>
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
           <button className="btn secondary" disabled={submitting} onClick={() => submit(false)}>
-            Save receipt
+            {t("saveReceipt")}
           </button>
           <button className="btn" disabled={submitting} onClick={() => submit(true)}>
-            Save & complete
+            {t("saveAndComplete")}
           </button>
         </div>
       </div>
 
       <div className="card">
-        <h3>Recent receipts</h3>
+        <h3>{t("recentTitle")}</h3>
         <table>
-          <thead><tr><th>ID</th><th>PO</th><th>Status</th><th>Discrepancies</th><th>Created</th></tr></thead>
+          <thead><tr>
+            <th>{t("table.id")}</th>
+            <th>{t("table.po")}</th>
+            <th>{t("table.status")}</th>
+            <th>{t("table.discrepancies")}</th>
+            <th>{t("table.created")}</th>
+          </tr></thead>
           <tbody>
             {recent.slice(0, 10).map((r: any) => (
               <tr key={r.receipt_id}>
                 <td>{r.receipt_id}</td>
                 <td>{r.po_id ?? "—"}</td>
-                <td>{r.status}</td>
-                <td>{r.discrepancies?.length || 0}</td>
-                <td>{new Date(r.created_at).toLocaleString()}</td>
+                <td>{t(`status.${r.status}`, { ns: "enums", defaultValue: r.status })}</td>
+                <td>{formatNumber(r.discrepancies?.length || 0, { maximumFractionDigits: 0 })}</td>
+                <td>{formatDateTime(r.created_at)}</td>
               </tr>
             ))}
           </tbody>

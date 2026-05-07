@@ -1,0 +1,46 @@
+{
+  "role": {
+    "operator": "مشغّل",
+    "manager": "مدير",
+    "admin": "مسؤول",
+    "viewer": "مشاهد"
+  },
+  "status": {
+    "active": "نشط",
+    "expired": "منتهي",
+    "released": "مُطلَق",
+    "open": "مفتوح",
+    "intake": "قيد الاستلام",
+    "completed": "مكتمل",
+    "failed": "فاشل",
+    "pending": "معلّق",
+    "closed": "مغلق",
+    "queued": "في الطابور",
+    "running": "قيد التشغيل"
+  },
+  "uom": {
+    "piece": "قطعة",
+    "kg": "كجم",
+    "liter": "لتر",
+    "meter": "متر",
+    "box": "صندوق",
+    "pack": "حزمة",
+    "unit": "وحدة"
+  },
+  "returnReason": {
+    "defective": "تالف",
+    "wrong_item": "صنف خاطئ",
+    "customer_request": "طلب العميل",
+    "expired": "منتهي الصلاحية",
+    "other": "أخرى"
+  },
+  "disposition": {
+    "restock": "إعادة للمخزون",
+    "scrap": "إتلاف",
+    "repair": "إصلاح"
+  },
+  "format": {
+    "csv": "CSV",
+    "json": "JSON"
+  }
+}

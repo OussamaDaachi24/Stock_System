@@ -1,0 +1,5 @@
+{
+  "requestFailed": "فشل الطلب",
+  "networkError": "خطأ في الشبكة",
+  "unauthorized": "انتهت الجلسة"
+}

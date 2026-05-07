@@ -1,0 +1,11 @@
+{
+  "dashboard": "Dashboard",
+  "products": "Products",
+  "receiving": "Receiving",
+  "returns": "Returns",
+  "reservations": "Reservations",
+  "suppliers": "Suppliers",
+  "purchaseOrders": "POs",
+  "reports": "Reports",
+  "admin": "Admin"
+}

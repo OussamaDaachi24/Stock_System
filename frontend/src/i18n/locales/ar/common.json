@@ -1,0 +1,35 @@
+{
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "create": "إنشاء",
+    "edit": "تعديل",
+    "remove": "إزالة",
+    "release": "إطلاق",
+    "find": "بحث",
+    "add": "إضافة",
+    "search": "بحث",
+    "next": "التالي",
+    "prev": "السابق",
+    "logout": "تسجيل الخروج",
+    "download": "تنزيل",
+    "generate": "إنشاء",
+    "saving": "جارٍ الحفظ…",
+    "loading": "جارٍ التحميل…",
+    "trigger": "تشغيل",
+    "restore": "استعادة",
+    "inspect": "فحص"
+  },
+  "labels": {
+    "yes": "نعم",
+    "no": "لا",
+    "optional": "اختياري",
+    "required": "مطلوب",
+    "none": "—",
+    "total": "إجمالي",
+    "showing": "عرض",
+    "all": "الكل",
+    "selected": "المحدد"
+  },
+  "appName": "نظام المخزون"
+}

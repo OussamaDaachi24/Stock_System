@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ProductDTO, fetchProducts } from "../api";
 import { useAuth } from "../store";
 import ProductForm from "../components/ProductForm";
@@ -6,6 +7,7 @@ import ProductForm from "../components/ProductForm";
 const PAGE_SIZE = 20;
 
 export default function ProductsPage() {
+  const { t } = useTranslation(["products", "common", "enums"]);
   const role = useAuth((s) => s.user?.role);
   const canMutate = role === "admin" || role === "manager";
 
@@ -34,21 +36,21 @@ export default function ProductsPage() {
 
   return (
     <div>
-      <h2>Products</h2>
+      <h2>{t("title")}</h2>
       <div className="card">
         <div className="toolbar">
           <form onSubmit={onSearchSubmit} style={{ display: "flex", gap: 8, flex: 1 }}>
             <input
               className="input"
-              placeholder="Search by SKU, name, or barcode"
+              placeholder={t("searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <button className="btn" type="submit">Search</button>
+            <button className="btn" type="submit">{t("actions.search", { ns: "common" })}</button>
           </form>
           {canMutate && (
-            <button className="btn" onClick={() => setCreating(true)} style={{ marginLeft: 8 }}>
-              + New product
+            <button className="btn" onClick={() => setCreating(true)} style={{ marginInlineStart: 8 }}>
+              {t("newProduct")}
             </button>
           )}
         </div>
@@ -56,12 +58,12 @@ export default function ProductsPage() {
         <table>
           <thead>
             <tr>
-              <th>SKU</th>
-              <th>Name</th>
-              <th>Barcode</th>
-              <th>UoM</th>
-              <th>Category</th>
-              <th>Reorder</th>
+              <th>{t("table.sku")}</th>
+              <th>{t("table.name")}</th>
+              <th>{t("table.barcode")}</th>
+              <th>{t("table.uom")}</th>
+              <th>{t("table.category")}</th>
+              <th>{t("table.reorder")}</th>
               <th></th>
             </tr>
           </thead>
@@ -71,13 +73,13 @@ export default function ProductsPage() {
                 <td>{p.sku}</td>
                 <td>{p.name}</td>
                 <td>{p.barcode || "—"}</td>
-                <td>{p.unit_of_measure}</td>
+                <td>{t(`uom.${p.unit_of_measure}`, { ns: "enums", defaultValue: p.unit_of_measure })}</td>
                 <td>{p.category || "—"}</td>
                 <td>{p.reorder_threshold ?? "—"}</td>
                 <td>
                   {canMutate && (
                     <button className="btn secondary" onClick={() => setEditing(p)}>
-                      Edit
+                      {t("actions.edit", { ns: "common" })}
                     </button>
                   )}
                 </td>
@@ -85,8 +87,8 @@ export default function ProductsPage() {
             ))}
             {items.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ textAlign: "center", padding: 32, color: "#6b7280" }}>
-                  No products found.
+                <td colSpan={7} className="empty">
+                  {t("empty")}
                 </td>
               </tr>
             )}
@@ -94,8 +96,8 @@ export default function ProductsPage() {
         </table>
 
         <div className="toolbar" style={{ marginTop: 16 }}>
-          <span style={{ color: "#6b7280", fontSize: 13 }}>
-            {total} total · showing {offset + 1}–{Math.min(offset + items.length, total)}
+          <span style={{ color: "var(--c-text-muted)", fontSize: 13 }}>
+            {t("pagination", { total, from: offset + 1, to: Math.min(offset + items.length, total) })}
           </span>
           <div style={{ display: "flex", gap: 8 }}>
             <button
@@ -103,14 +105,14 @@ export default function ProductsPage() {
               disabled={offset === 0}
               onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
             >
-              Prev
+              {t("actions.prev", { ns: "common" })}
             </button>
             <button
               className="btn secondary"
               disabled={offset + PAGE_SIZE >= total}
               onClick={() => setOffset(offset + PAGE_SIZE)}
             >
-              Next
+              {t("actions.next", { ns: "common" })}
             </button>
           </div>
         </div>

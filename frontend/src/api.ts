@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { v4 as uuidv4 } from "uuid";
+import i18n from "./i18n";
 import { useAuth, useToast } from "./store";
 
 // Use relative path if VITE_API_BASE not set; docker nginx will proxy to /api
@@ -23,12 +24,16 @@ api.interceptors.response.use(
     if (err.response?.status === 401) {
       useAuth.getState().clear();
     }
-    const msg =
+    const serverMsg =
       err.response?.data?.error?.message ||
-      err.response?.data?.detail ||
-      err.message ||
-      "Request failed";
-    useToast.getState().show(String(msg), "error");
+      err.response?.data?.detail;
+    const fallback =
+      err.response?.status === 401
+        ? i18n.t("unauthorized", { ns: "toast" })
+        : !err.response
+          ? i18n.t("networkError", { ns: "toast" })
+          : i18n.t("requestFailed", { ns: "toast" });
+    useToast.getState().show(String(serverMsg || err.message || fallback), "error");
     return Promise.reject(err);
   }
 );

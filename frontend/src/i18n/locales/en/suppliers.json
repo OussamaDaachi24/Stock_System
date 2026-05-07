@@ -1,0 +1,24 @@
+{
+  "title": "Suppliers",
+  "count": "{{count}} suppliers",
+  "newSupplier": "+ New supplier",
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "city": "City",
+    "country": "Country",
+    "active": "Active"
+  },
+  "modal": {
+    "title": "Create supplier",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "city": "City",
+    "country": "Country"
+  },
+  "toast": {
+    "created": "Supplier created"
+  }
+}

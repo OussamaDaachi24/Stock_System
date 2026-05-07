@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { SupplierDTO, createSupplier, fetchSuppliers } from "../api";
 import { useAuth, useToast } from "../store";
 
 export default function SuppliersPage() {
+  const { t } = useTranslation(["suppliers", "common"]);
   const role = useAuth((s) => s.user?.role);
   const canMutate = role === "admin" || role === "manager";
   const toast = useToast();
@@ -14,14 +16,21 @@ export default function SuppliersPage() {
 
   return (
     <div>
-      <h2>Suppliers</h2>
+      <h2>{t("title")}</h2>
       <div className="card">
         <div className="toolbar">
-          <span>{items.length} suppliers</span>
-          {canMutate && <button className="btn" onClick={() => setCreating(true)}>+ New supplier</button>}
+          <span>{t("count", { count: items.length })}</span>
+          {canMutate && <button className="btn" onClick={() => setCreating(true)}>{t("newSupplier")}</button>}
         </div>
         <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Country</th><th>Active</th></tr></thead>
+          <thead><tr>
+            <th>{t("table.name")}</th>
+            <th>{t("table.email")}</th>
+            <th>{t("table.phone")}</th>
+            <th>{t("table.city")}</th>
+            <th>{t("table.country")}</th>
+            <th>{t("table.active")}</th>
+          </tr></thead>
           <tbody>
             {items.map((s) => (
               <tr key={s.supplier_id}>
@@ -30,7 +39,7 @@ export default function SuppliersPage() {
                 <td>{s.contact_phone || "—"}</td>
                 <td>{s.city || "—"}</td>
                 <td>{s.country || "—"}</td>
-                <td>{s.active ? "Yes" : "No"}</td>
+                <td>{s.active ? t("labels.yes", { ns: "common" }) : t("labels.no", { ns: "common" })}</td>
               </tr>
             ))}
           </tbody>
@@ -40,7 +49,7 @@ export default function SuppliersPage() {
       {creating && (
         <SupplierModal
           onClose={() => setCreating(false)}
-          onSaved={() => { setCreating(false); toast.show("Supplier created"); load(); }}
+          onSaved={() => { setCreating(false); toast.show(t("toast.created")); load(); }}
         />
       )}
     </div>
@@ -48,6 +57,7 @@ export default function SuppliersPage() {
 }
 
 function SupplierModal({ onClose, onSaved }: any) {
+  const { t } = useTranslation(["suppliers", "common"]);
   const [form, setForm] = useState<Partial<SupplierDTO>>({ name: "", contact_email: "", contact_phone: "" });
   function update(k: string, v: any) { setForm((f) => ({ ...f, [k]: v })); }
   async function save() {
@@ -57,20 +67,20 @@ function SupplierModal({ onClose, onSaved }: any) {
   return (
     <div className="modal-bg" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h3>Create supplier</h3>
-        <label>Name</label>
+        <h3>{t("modal.title")}</h3>
+        <label>{t("modal.name")}</label>
         <input className="input" value={form.name || ""} onChange={(e) => update("name", e.target.value)} />
-        <label>Email</label>
+        <label>{t("modal.email")}</label>
         <input className="input" value={form.contact_email || ""} onChange={(e) => update("contact_email", e.target.value)} />
-        <label>Phone</label>
+        <label>{t("modal.phone")}</label>
         <input className="input" value={form.contact_phone || ""} onChange={(e) => update("contact_phone", e.target.value)} />
-        <label>City</label>
+        <label>{t("modal.city")}</label>
         <input className="input" value={form.city || ""} onChange={(e) => update("city", e.target.value)} />
-        <label>Country</label>
+        <label>{t("modal.country")}</label>
         <input className="input" value={form.country || ""} onChange={(e) => update("country", e.target.value)} />
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-          <button className="btn" onClick={save}>Create</button>
-          <button className="btn secondary" onClick={onClose}>Cancel</button>
+          <button className="btn" onClick={save}>{t("actions.create", { ns: "common" })}</button>
+          <button className="btn secondary" onClick={onClose}>{t("actions.cancel", { ns: "common" })}</button>
         </div>
       </div>
     </div>

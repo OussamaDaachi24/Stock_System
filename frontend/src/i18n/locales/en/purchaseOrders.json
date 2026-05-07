@@ -1,0 +1,28 @@
+{
+  "title": "Purchase Orders",
+  "count": "{{count}} POs",
+  "newPO": "+ New PO",
+  "table": {
+    "po": "PO #",
+    "supplier": "Supplier",
+    "status": "Status",
+    "lines": "Lines",
+    "created": "Created",
+    "sku": "SKU",
+    "qty": "Qty",
+    "unitPrice": "Unit price"
+  },
+  "modal": {
+    "title": "Create purchase order",
+    "supplier": "Supplier",
+    "supplierPlaceholder": "— select —",
+    "po": "PO #",
+    "addProduct": "Add product",
+    "searchPlaceholder": "Search SKU/name",
+    "unitPricePlaceholder": "0.00"
+  },
+  "toast": {
+    "missingFields": "Supplier, PO number, and at least one line required",
+    "created": "PO created"
+  }
+}

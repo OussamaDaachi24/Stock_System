@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { login } from "../api";
 import { useAuth, useToast } from "../store";
 
 export default function LoginPage() {
+  const { t } = useTranslation("auth");
   const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("ChangeMe123!");
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export default function LoginPage() {
         refreshToken: data.tokens.refresh_token,
         user: data.user,
       });
-      showToast(`Welcome, ${data.user.name}`);
+      showToast(t("welcome", { name: data.user.name }));
       navigate("/products");
     } catch {
       // toast already shown by interceptor
@@ -33,9 +35,9 @@ export default function LoginPage() {
   return (
     <div className="login-wrap">
       <div className="card login-card">
-        <h2>Sign in</h2>
+        <h2>{t("title")}</h2>
         <form onSubmit={onSubmit}>
-          <label>Email</label>
+          <label>{t("email")}</label>
           <input
             className="input"
             type="email"
@@ -43,7 +45,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <label>Password</label>
+          <label>{t("password")}</label>
           <input
             className="input"
             type="password"
@@ -53,7 +55,7 @@ export default function LoginPage() {
           />
           <div style={{ marginTop: 18 }}>
             <button className="btn" type="submit" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? t("submitting") : t("submit")}
             </button>
           </div>
         </form>

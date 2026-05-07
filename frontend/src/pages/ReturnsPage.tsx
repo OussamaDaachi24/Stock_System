@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { createReturn, fetchProducts, fetchReturns, setReturnDisposition } from "../api";
 import { useToast } from "../store";
 
@@ -6,6 +7,7 @@ const REASONS = ["defective", "wrong_item", "customer_request", "expired", "othe
 const DISPOSITIONS = ["restock", "scrap", "repair"] as const;
 
 export default function ReturnsPage() {
+  const { t } = useTranslation(["returns", "common", "enums"]);
   const toast = useToast();
   const [search, setSearch] = useState("");
   const [productId, setProductId] = useState<number | null>(null);
@@ -26,7 +28,7 @@ export default function ReturnsPage() {
     if (!search.trim()) return;
     const data = await fetchProducts({ search, limit: 1, offset: 0 });
     if (!data.items.length) {
-      toast.show("Product not found", "error");
+      toast.show(t("toast.lookupFirst"), "error");
       return;
     }
     setProductId(data.items[0].product_id);
@@ -35,7 +37,7 @@ export default function ReturnsPage() {
 
   async function submit() {
     if (!productId) {
-      toast.show("Look up a product first", "error");
+      toast.show(t("toast.lookupFirst"), "error");
       return;
     }
     await createReturn({
@@ -45,7 +47,7 @@ export default function ReturnsPage() {
       reference: reference || undefined,
       receiving_notes: notes || undefined,
     });
-    toast.show("Return created");
+    toast.show(t("toast.created"));
     setProductId(null); setProductSku(""); setQuantity(1); setReason("defective");
     setReference(""); setNotes(""); setSearch("");
     refresh();
@@ -53,59 +55,67 @@ export default function ReturnsPage() {
 
   return (
     <div>
-      <h2>Returns</h2>
+      <h2>{t("title")}</h2>
       <div className="card" style={{ marginBottom: 12 }}>
-        <h3>Create return</h3>
+        <h3>{t("createTitle")}</h3>
         <div className="row">
           <div>
-            <label>Product (SKU/name/barcode)</label>
+            <label>{t("fields.product")}</label>
             <div style={{ display: "flex", gap: 8 }}>
               <input className="input" value={search} onChange={(e) => setSearch(e.target.value)} />
-              <button className="btn secondary" onClick={lookup}>Find</button>
+              <button className="btn secondary" onClick={lookup}>{t("actions.find", { ns: "common" })}</button>
             </div>
-            {productSku && <div style={{ fontSize: 12, color: "#059669", marginTop: 4 }}>Selected: {productSku}</div>}
+            {productSku && <div style={{ fontSize: 12, color: "var(--c-success)", marginTop: 4 }}>{t("selected", { sku: productSku })}</div>}
           </div>
           <div>
-            <label>Quantity</label>
+            <label>{t("fields.quantity")}</label>
             <input className="input" type="number" min={1} value={quantity}
               onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))} />
           </div>
         </div>
         <div className="row">
           <div>
-            <label>Reason</label>
+            <label>{t("fields.reason")}</label>
             <select className="input" value={reason} onChange={(e) => setReason(e.target.value)}>
-              {REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
+              {REASONS.map((r) => <option key={r} value={r}>{t(`returnReason.${r}`, { ns: "enums" })}</option>)}
             </select>
           </div>
           <div>
-            <label>Order reference (optional)</label>
+            <label>{t("fields.reference")}</label>
             <input className="input" value={reference} onChange={(e) => setReference(e.target.value)} />
           </div>
         </div>
-        <label>Notes</label>
+        <label>{t("fields.notes")}</label>
         <input className="input" value={notes} onChange={(e) => setNotes(e.target.value)} />
         <div style={{ marginTop: 12 }}>
-          <button className="btn" onClick={submit}>Create return</button>
+          <button className="btn" onClick={submit}>{t("submit")}</button>
         </div>
       </div>
 
       <div className="card">
-        <h3>Return queue</h3>
+        <h3>{t("queueTitle")}</h3>
         <table>
-          <thead><tr><th>ID</th><th>Product</th><th>Qty</th><th>Reason</th><th>Status</th><th>Disposition</th><th></th></tr></thead>
+          <thead><tr>
+            <th>{t("table.id")}</th>
+            <th>{t("table.product")}</th>
+            <th>{t("table.qty")}</th>
+            <th>{t("table.reason")}</th>
+            <th>{t("table.status")}</th>
+            <th>{t("table.disposition")}</th>
+            <th></th>
+          </tr></thead>
           <tbody>
             {items.map((r) => (
               <tr key={r.return_id}>
                 <td>{r.return_id}</td>
                 <td>#{r.product_id}</td>
                 <td>{r.quantity}</td>
-                <td>{r.reason}</td>
-                <td>{r.status}</td>
-                <td>{r.disposition || "—"}</td>
+                <td>{t(`returnReason.${r.reason}`, { ns: "enums", defaultValue: r.reason })}</td>
+                <td>{t(`status.${r.status}`, { ns: "enums", defaultValue: r.status })}</td>
+                <td>{r.disposition ? t(`disposition.${r.disposition}`, { ns: "enums", defaultValue: r.disposition }) : "—"}</td>
                 <td>
                   {r.status !== "closed" && (
-                    <button className="btn secondary" onClick={() => setDisposing(r)}>Inspect</button>
+                    <button className="btn secondary" onClick={() => setDisposing(r)}>{t("actions.inspect", { ns: "common" })}</button>
                   )}
                 </td>
               </tr>
@@ -126,6 +136,7 @@ export default function ReturnsPage() {
 }
 
 function DispositionModal({ ret, onClose, onSaved }: any) {
+  const { t } = useTranslation(["returns", "common", "enums"]);
   const [disposition, setDisposition] = useState<string>("restock");
   const [notes, setNotes] = useState("");
   const [credit, setCredit] = useState("");
@@ -137,25 +148,25 @@ function DispositionModal({ ret, onClose, onSaved }: any) {
       disposition_notes: notes || undefined,
       credit_amount: credit || undefined,
     });
-    toast.show("Disposition saved");
+    toast.show(t("toast.dispositionSaved"));
     onSaved();
   }
 
   return (
     <div className="modal-bg" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h3>Return #{ret.return_id} — Inspect</h3>
-        <label>Disposition</label>
+        <h3>{t("modal.title", { id: ret.return_id })}</h3>
+        <label>{t("modal.disposition")}</label>
         <select className="input" value={disposition} onChange={(e) => setDisposition(e.target.value)}>
-          {DISPOSITIONS.map((d) => <option key={d} value={d}>{d}</option>)}
+          {DISPOSITIONS.map((d) => <option key={d} value={d}>{t(`disposition.${d}`, { ns: "enums" })}</option>)}
         </select>
-        <label>Notes</label>
+        <label>{t("modal.notes")}</label>
         <input className="input" value={notes} onChange={(e) => setNotes(e.target.value)} />
-        <label>Credit amount (optional)</label>
-        <input className="input" value={credit} onChange={(e) => setCredit(e.target.value)} placeholder="0.00" />
+        <label>{t("modal.credit")}</label>
+        <input className="input" value={credit} onChange={(e) => setCredit(e.target.value)} placeholder={t("modal.creditPlaceholder")} />
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-          <button className="btn" onClick={save}>Save</button>
-          <button className="btn secondary" onClick={onClose}>Cancel</button>
+          <button className="btn" onClick={save}>{t("actions.save", { ns: "common" })}</button>
+          <button className="btn secondary" onClick={onClose}>{t("actions.cancel", { ns: "common" })}</button>
         </div>
       </div>
     </div>

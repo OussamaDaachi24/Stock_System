@@ -1,0 +1,29 @@
+{
+  "title": "Reservations",
+  "quickReserve": "Quick reserve",
+  "fields": {
+    "product": "Product",
+    "reference": "Order / project reference",
+    "quantity": "Quantity",
+    "expiryDays": "Expiry (days)"
+  },
+  "availability": "{{sku}} — available: {{available}}",
+  "submit": "Reserve",
+  "activeTitle": "Active reservations",
+  "table": {
+    "id": "ID",
+    "product": "Product",
+    "qty": "Qty",
+    "ref": "Ref",
+    "expires": "Expires"
+  },
+  "expiresIn": "{{date}} ({{days}}d)",
+  "empty": "No active reservations.",
+  "toast": {
+    "lookupFirst": "Find a product first",
+    "insufficient": "Insufficient stock ({{available}} available)",
+    "created": "Reservation created",
+    "released": "Reservation released",
+    "confirmRelease": "Release this reservation?"
+  }
+}

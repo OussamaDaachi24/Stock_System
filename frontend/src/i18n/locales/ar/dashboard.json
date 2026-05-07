@@ -1,0 +1,20 @@
+{
+  "title": "لوحة التحكم",
+  "stats": {
+    "products": "المنتجات",
+    "ledgerEntries": "حركات السجل",
+    "activeReservations": "حجوزات نشطة",
+    "openReceipts": "إيصالات مفتوحة",
+    "pendingReturns": "مرتجعات معلّقة",
+    "lowStock": "أصناف منخفضة المخزون"
+  },
+  "quickLinks": "روابط سريعة",
+  "lowStockTitle": "منتجات قاربت على النفاد",
+  "lowStockEmpty": "جميع المنتجات أعلى من حد إعادة الطلب.",
+  "table": {
+    "sku": "الرمز",
+    "name": "الاسم",
+    "onHand": "المتوفر",
+    "threshold": "الحد"
+  }
+}

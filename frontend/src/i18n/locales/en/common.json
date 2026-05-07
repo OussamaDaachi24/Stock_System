@@ -1,0 +1,35 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "create": "Create",
+    "edit": "Edit",
+    "remove": "Remove",
+    "release": "Release",
+    "find": "Find",
+    "add": "Add",
+    "search": "Search",
+    "next": "Next",
+    "prev": "Prev",
+    "logout": "Logout",
+    "download": "Download",
+    "generate": "Generate",
+    "saving": "Saving…",
+    "loading": "Loading…",
+    "trigger": "Trigger",
+    "restore": "Restore",
+    "inspect": "Inspect"
+  },
+  "labels": {
+    "yes": "Yes",
+    "no": "No",
+    "optional": "optional",
+    "required": "required",
+    "none": "—",
+    "total": "total",
+    "showing": "showing",
+    "all": "All",
+    "selected": "Selected"
+  },
+  "appName": "Stock System"
+}

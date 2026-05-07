@@ -1,0 +1,30 @@
+{
+  "title": "Products",
+  "searchPlaceholder": "Search by SKU, name, or barcode",
+  "newProduct": "+ New product",
+  "table": {
+    "sku": "SKU",
+    "name": "Name",
+    "barcode": "Barcode",
+    "uom": "UoM",
+    "category": "Category",
+    "reorder": "Reorder"
+  },
+  "empty": "No products found.",
+  "pagination": "{{total}} total · showing {{from}}–{{to}}",
+  "form": {
+    "newTitle": "New product",
+    "editTitle": "Edit {{sku}}",
+    "sku": "SKU *",
+    "barcode": "Barcode (scan or type)",
+    "name": "Name *",
+    "uom": "Unit of measure *",
+    "category": "Category",
+    "costPrice": "Cost price",
+    "sellPrice": "Sell price",
+    "reorderThreshold": "Reorder threshold",
+    "location": "Location",
+    "createdToast": "Product created",
+    "updatedToast": "Product updated"
+  }
+}

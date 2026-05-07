@@ -1,0 +1,34 @@
+{
+  "title": "المرتجعات",
+  "createTitle": "إنشاء مرتجع",
+  "fields": {
+    "product": "المنتج (الرمز/الاسم/الباركود)",
+    "quantity": "الكمية",
+    "reason": "السبب",
+    "reference": "مرجع الطلب (اختياري)",
+    "notes": "ملاحظات"
+  },
+  "selected": "المحدد: {{sku}}",
+  "submit": "إنشاء مرتجع",
+  "queueTitle": "قائمة المرتجعات",
+  "table": {
+    "id": "المعرّف",
+    "product": "المنتج",
+    "qty": "الكمية",
+    "reason": "السبب",
+    "status": "الحالة",
+    "disposition": "التصرف"
+  },
+  "modal": {
+    "title": "مرتجع رقم {{id}} — فحص",
+    "disposition": "التصرف",
+    "notes": "ملاحظات",
+    "credit": "مبلغ الإشعار الدائن (اختياري)",
+    "creditPlaceholder": "0.00"
+  },
+  "toast": {
+    "lookupFirst": "ابحث عن المنتج أولًا",
+    "created": "تم إنشاء المرتجع",
+    "dispositionSaved": "تم حفظ التصرف"
+  }
+}

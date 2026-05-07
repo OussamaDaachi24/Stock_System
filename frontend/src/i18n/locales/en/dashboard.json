@@ -1,0 +1,20 @@
+{
+  "title": "Dashboard",
+  "stats": {
+    "products": "Products",
+    "ledgerEntries": "Ledger entries",
+    "activeReservations": "Active reservations",
+    "openReceipts": "Open receipts",
+    "pendingReturns": "Pending returns",
+    "lowStock": "Low-stock items"
+  },
+  "quickLinks": "Quick links",
+  "lowStockTitle": "Low-stock products",
+  "lowStockEmpty": "All products above reorder threshold.",
+  "table": {
+    "sku": "SKU",
+    "name": "Name",
+    "onHand": "On hand",
+    "threshold": "Threshold"
+  }
+}

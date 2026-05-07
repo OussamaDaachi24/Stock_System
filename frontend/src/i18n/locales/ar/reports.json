@@ -1,0 +1,17 @@
+{
+  "title": "التقارير",
+  "exportTitle": "تصدير المخزون",
+  "fields": {
+    "format": "الصيغة",
+    "category": "الفئة (اختياري)",
+    "supplierId": "معرّف المورد (اختياري)"
+  },
+  "generate": "إنشاء",
+  "download": "تنزيل",
+  "jobInfo": "المهمة",
+  "status": "الحالة",
+  "expires": "تنتهي {{date}}",
+  "toast": {
+    "downloadFailed": "فشل التنزيل"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Reports",
+  "exportTitle": "Inventory export",
+  "fields": {
+    "format": "Format",
+    "category": "Category (optional)",
+    "supplierId": "Supplier ID (optional)"
+  },
+  "generate": "Generate",
+  "download": "Download",
+  "jobInfo": "Job",
+  "status": "status",
+  "expires": "expires {{date}}",
+  "toast": {
+    "downloadFailed": "Download failed"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "role": {
+    "operator": "Operator",
+    "manager": "Manager",
+    "admin": "Admin",
+    "viewer": "Viewer"
+  },
+  "status": {
+    "active": "Active",
+    "expired": "Expired",
+    "released": "Released",
+    "open": "Open",
+    "intake": "Intake",
+    "completed": "Completed",
+    "failed": "Failed",
+    "pending": "Pending",
+    "closed": "Closed",
+    "queued": "Queued",
+    "running": "Running"
+  },
+  "uom": {
+    "piece": "piece",
+    "kg": "kg",
+    "liter": "liter",
+    "meter": "meter",
+    "box": "box",
+    "pack": "pack",
+    "unit": "unit"
+  },
+  "returnReason": {
+    "defective": "Defective",
+    "wrong_item": "Wrong item",
+    "customer_request": "Customer request",
+    "expired": "Expired",
+    "other": "Other"
+  },
+  "disposition": {
+    "restock": "Restock",
+    "scrap": "Scrap",
+    "repair": "Repair"
+  },
+  "format": {
+    "csv": "CSV",
+    "json": "JSON"
+  }
+}
